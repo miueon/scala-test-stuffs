@@ -1,5 +1,6 @@
 package theworld.macro4
 case class A(x: Int)
+case class B(var y: Int)
 @main
 def test = 
   var x = 0
@@ -13,7 +14,11 @@ def test =
 
   ref := 10
 
-  println(x)
+  val y = B(42)
+
+  val refY = Ref(y.y)
+
+  println(ref)
 
   val failed = 0
 

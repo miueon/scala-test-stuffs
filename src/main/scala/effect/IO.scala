@@ -101,13 +101,13 @@ object IO:
 
   def forkUnit[A](a: => A): IO[A] = fork(now(a))
 
-  def raiseError[A](e: Throwable): IO[A] = par(Par.parMonadThrow.raiseError(e))
+  def raiseError[A](e: Throwable): IO[A] = Free.Error(e)
 
   extension [A](ioa: IO[A])
     def unsafeRunSync(using Async): A =
       ioa.run(using Par.parMonadThrow).run
 
-  given monad: Monad[IO] with
+  given monad: MonadThrow[IO] with
     def pure[A](x: A): IO[A] = IO(x)
     def flatMap[A, B](fa: IO[A])(f: A => IO[B]): IO[B] = fa.flatMap(f)
     def tailRecM[A, B](a: A)(f: A => IO[Either[A, B]]): IO[B] =
@@ -115,6 +115,8 @@ object IO:
         case Left(a)  => tailRecM(a)(f)
         case Right(b) => IO(b)
       }
+    def handleErrorWith[A](fa: IO[A])(f: Throwable => IO[A]): IO[A] = fa.handleErrorWith(f)
+    def raiseError[A](e: Throwable): IO[A] = IO.raiseError(e)
 end IO
 trait IOApp:
   import gears.async.default.given
