@@ -24,8 +24,8 @@ def displayF(t: F)(using s: Show[F]) =
 enum F:
   case A
 
-@main
-def test =
-  val p1: People = Person("John", "zz", 22)
-  display(p1)
+// @main
+// def test =
+//   val p1: People = Person("John", "zz", 22)
+//   display(p1)
   // displayF(F.A)

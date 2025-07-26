@@ -23,7 +23,6 @@ enum Free[+F[_], +A]:
   case Handle[+F[_], +A](source: Free[F, A], handler: Throwable => Free[F, A]) extends Free[F, A]
 
   def flatMap[F2[x] >: F[x], B](f: A => Free[F2, B]): Free[F2, B] =
-    Stream(1, 2, 3)
     FlatMap(this, f)
 
   def handleErrorWith[F2[x] >: F[x], A2 >: A](handler: Throwable => Free[F2, A2]): Free[F2, A2] = Handle(this, handler)
@@ -33,6 +32,20 @@ enum Free[+F[_], +A]:
 
   def union[G[_]]: Free[[x] =>> F[x] | G[x], A] = this
   def covary[F2[x] >: F[x]]: Free[F2, A] = this
+
+  def foldMap[G[_]: MonadThrow, A2 >: A](transform: F ~> G): G[A2] = 
+    def loop[F2[x] >: F[x], A3 >: A2](free: Free[F2, A3]): G[A3] = free match
+      case Return(a) => a.pure[G]
+      case Error(t) => t.raiseError[G, A3]
+      case Suspend(fa) => transform(fa.asInstanceOf[F[A3]])
+      case FlatMap(sub, f) =>
+        loop(sub).flatMap { a =>
+          val nextFree = f.asInstanceOf[Any => Free[F2, A3]](a)
+          loop(nextFree)
+        }
+      case Handle(source, handler) =>
+        loop(source).handleErrorWith(t => loop(handler(t)))
+    loop(this)
 
   def run[F2[x] >: F[x]: MonadThrow, A2 >: A]: F2[A2] = step.flatMap { 
     case Error(t)              => t.raiseError

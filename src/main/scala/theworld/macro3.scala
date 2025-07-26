@@ -14,7 +14,10 @@ def forEachImpl[T](t: Expr[Array[T]], fn: Expr[T => Unit])(using
     var i = 0
     val n = xs.length
     while i < n do
-      ${ Expr.betaReduce('{ $fn(xs(i)) }) } // beta reduce the expr then splice the expr 
+      ${ Expr.betaReduce('{ $fn(xs(i)) }) } 
+      // beta reduce the expr then splice the expr. 
+      // Aim for runtime performance
+      // As the fn would be reduced to expression, rather than a function call by the betaReduce
       // fn(xs(i))
       i += 1
   }

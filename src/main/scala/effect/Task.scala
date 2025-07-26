@@ -1,11 +1,11 @@
-package effect
+// package effect
 
-import java.util.concurrent.ExecutorService
-import scala.util.{Failure, Success, Try}
-import scala.util.control.NonFatal
-import par.actor.Par
-import cats.Monad
-import cats.syntax.all.*
+// import java.util.concurrent.ExecutorService
+// import scala.util.{Failure, Success, Try}
+// import scala.util.control.NonFatal
+// import par.actor.Par
+// import cats.Monad
+// import cats.syntax.all.*
 
 /*
  * `Task[A]` is an opaque type around `IO[Try[A]]` which is

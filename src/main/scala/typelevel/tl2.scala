@@ -181,10 +181,10 @@ inline def checkDuplicateFields[A](using mirror: Mirror.ProductOf[A]): Unit =
 // type Res4 = MkString[Strings]
 
 // type Result = RenderError[Labels]
-@main
-def test =
-  val user = User(Email("123@123.com", None), Phone("123456", 1), Address("USA", "NY"))
-  val codec = mkCodec[User]
-  val json = codec(user)
-  println(json)
-  println(codec.decodeJson(json))
+// @main
+// def test =
+//   val user = User(Email("123@123.com", None), Phone("123456", 1), Address("USA", "NY"))
+//   val codec = mkCodec[User]
+//   val json = codec(user)
+//   println(json)
+//   println(codec.decodeJson(json))
